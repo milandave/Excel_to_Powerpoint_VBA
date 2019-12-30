@@ -33,7 +33,7 @@ If slidecounter = 1 Then
 Else
     
     'open existing powerpoint & count number of slides
-    pp.Presentations.Open "C:\Users\davemc\Downloads\MD.pptx"
+    pp.Presentations.Open "C:\" 'define path
     ppCount = pp.Presentations.Count
     Debug.Print ppCount
     
@@ -55,7 +55,7 @@ End If
 
 With pp.ActivePresentation
 
-   .SaveAs "C:\Users\davemc\Downloads\MD", ppSaveAsDefault
+   .SaveAs "C:\", ppSaveAsDefault 'define path
    
    pName = .Name
    pPath = .Path
