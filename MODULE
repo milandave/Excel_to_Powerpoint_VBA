@@ -1,0 +1,97 @@
+'MODULE
+Sub test3()
+
+Dim x
+Dim lstrow
+Dim lstcol
+Dim fn As String
+Dim rng As Range
+Dim counter As Integer
+Dim slidecounter As Integer
+Dim pName As String
+Dim pPath As String
+Dim rowsperslide
+Dim rowfrom
+Dim rowto
+Dim rng1 As Range
+Dim rng2 As Range
+
+x = 4
+lstrow = ThisWorkbook.Worksheets(1).Cells(x, 1).End(xlDown).Row
+lstcol = ThisWorkbook.Worksheets(1).Range("A3").End(xlToRight).Column
+
+pName = "None"
+pPath = "None"
+
+'Debug.Print lstrow, lstcol, x
+
+Set rng1 = Sheet1.Range("A1:M3")
+
+'user can amend how many rows per slide
+rowsperslide = InputBox("Rows per slide", "Rows", 50)
+
+counter = Application.RoundUp(lstrow / rowsperslide, 0)
+
+Debug.Print counter
+
+'if more than 50 rows of data to paste
+For slidecounter = 1 To counter
+    
+    If slidecounter = 1 Then
+        
+        'select specific range per slide
+
+        rowfrom = 4
+        rowto = rowfrom + (rowsperslide - rowfrom)
+
+        Debug.Print slidecounter, rowfrom, rowto
+
+        Set rng2 = Sheet1.Range("A" & rowfrom & ":M" & rowto)
+        
+        Set rng = Application.Union(rng1, rng2)
+        
+        Sheets("Sheet2").Range("A:M").Delete
+        
+        rng.Copy Sheets("Sheet2").Range("A:M")
+        
+        lstrow = Worksheets("Sheet2").Range("A1048576").End(xlUp).Row
+        
+        Set rng = Worksheets("Sheet2").Range("A1:M" & lstrow)
+        
+        fn = func1(rng, slidecounter, pName, pPath)
+        
+        Debug.Print pName, pPath
+        
+    Else:
+    
+        'select specific range per slide
+        
+        rowfrom = rowto + 1
+        rowto = rowfrom + (rowsperslide - 1)
+        
+        Debug.Print slidecounter, rowfrom, rowto
+        
+        Set rng1 = Sheet1.Range("A1:M3")
+        Set rng2 = Sheet1.Range("A" & rowfrom & ":M" & rowto)
+
+        Set rng = Application.Union(rng1, rng2)
+        
+        Sheets("Sheet2").Range("A:M").Delete
+        
+        rng.Copy Sheets("Sheet2").Range("A:M")
+        
+        lstrow = Worksheets("Sheet2").Range("A1048576").End(xlUp).Row
+        
+        Set rng = Worksheets("Sheet2").Range("A1:M" & lstrow)
+
+        fn = func1(rng, slidecounter, pName, pPath)
+        
+        Debug.Print pName, pPath
+    
+    End If
+
+Next slidecounter
+
+MsgBox "Powerpoint has now been updated"
+
+End Sub
