@@ -1,0 +1,67 @@
+Function func1(rng As Range, slidecounter As Integer, pName As String, pPath As String)
+
+Dim pp As PowerPoint.Application
+Dim pres As Object
+Dim sl As PowerPoint.Slide
+Dim myshape As Object
+Dim pptSlide As Slide
+Dim pptLayout As CustomLayout
+ 
+
+
+Set pp = New PowerPoint.Application
+
+On Error Resume Next
+pp.Visible = msoFalse
+On Error GoTo 0
+
+If slidecounter = 1 Then
+
+    Set pres = pp.Presentations.Add
+    Set sl = pres.Slides.Add(1, 12)
+    
+    rng.Copy
+    
+    sl.Shapes.PasteSpecial DataType:=2
+    
+    Set myshape = sl.Shapes(sl.Shapes.Count)
+    myshape.Left = 0.5
+    myshape.Top = 0.5
+    
+    
+'counter 2 (this will create a second slide and paste next set of range there)
+Else
+    
+    'open existing powerpoint & count number of slides
+    pp.Presentations.Open "C:\Users\davemc\Downloads\MD.pptx"
+    ppCount = pp.Presentations.Count
+    Debug.Print ppCount
+    
+    Set pptLayout = pp.ActivePresentation.Slides(1).CustomLayout
+    Set pptSlide = pp.ActivePresentation.Slides.AddSlide(slidecounter, pptLayout)
+    
+    rng.Copy
+    
+    pptSlide.Select
+    
+    pptSlide.Shapes.PasteSpecial DataType:=2
+        
+    Set myshape = pptSlide.Shapes(pptSlide.Shapes.Count)
+    myshape.Left = 0.5
+    myshape.Top = 0.5
+    
+
+End If
+
+With pp.ActivePresentation
+
+   .SaveAs "C:\Users\davemc\Downloads\MD", ppSaveAsDefault
+   
+   pName = .Name
+   pPath = .Path
+
+End With
+
+pp.Quit
+
+End Function
